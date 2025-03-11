@@ -2,6 +2,7 @@ import time
 
 import stepper_motor
 import constant
+import threading
 
 class Controller:
     def __init__(self):
@@ -13,12 +14,18 @@ class Controller:
         }
 
     def move_motors(self, directions: list[int], steps: list[int], speeds: list[float]):
+        threads = []
         for i in range(4):
-            self.motors[f"motor{i}"].step(
-                direction=directions[i],
-                steps=steps[i],
-                speed=speeds[i]
-            )
+            thread = threading.Thread(target=self.motors[f"motor{i}"].step, kwargs={
+                "direction": directions[i],
+                "steps": steps[i],
+                "speed": speeds[i]
+            })
+            threads.append(thread)
+            thread.start()
+
+            for thread in threads:
+                thread.join()
 
     def left(self):
         self.move_motors(
