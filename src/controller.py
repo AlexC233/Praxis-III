@@ -1,5 +1,4 @@
 import time
-import keyboard
 
 import stepper_motor
 import constant
