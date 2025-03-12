@@ -1,8 +1,8 @@
 # To do:
 ## Manual Control:
-    1. Drive the motors at the same time
-    2. Speed = delay in step() to prevent signal toggling too fast + delay in main.py to prevent consective input
-    3. Constant Testing
+    1. Drive the motors at the same time (Solved, Mar.12)
+    2. Speed = delay in step() to prevent signal toggling too fast + delay in main.py to prevent consective input (Partly solved with velocity to be decied, Mar.12)
+    3. Constant Testing 
 ## Speed Control: 
     1. PID without encoder?
 ## Trajectory Planning: 
