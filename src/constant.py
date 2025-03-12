@@ -18,20 +18,17 @@ MOTOR3_STEP_PIN = board.GP15
 #
 # Stepper Motor Parameters
 #
-STEPS_PER_REV = 200       # Typical for many stepper motors
-DEFAULT_STEP_DELAY = 0.01 # A small delay between steps (adjust as needed)
+STEPS_PER_REV = 200       # Nema 17: 200 steps per revolution, or 1.8 degrees per step
+DEFAULT_STEP_DELAY = 0.3 / 2 # 200 / 60 / 2 gives 1 RPM
 
 #
 # Directions
 #
-DIR_CW  = False  # You can rename or invert these if your motor turns in the opposite direction.
+DIR_CW  = False  # Clockwise, looking from top down (facing the shaft)
 DIR_CCW = True
 
 #
-# Movement definitions:
-# Each "working mode" uses a list of directions and steps for each of the 4 motors.
-# This is just an example configuration for demonstration.
-# Feel free to customize these so your motors move as desired.
+# Movement Parameters
 #
 
 # Move forward

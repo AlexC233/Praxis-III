@@ -24,7 +24,7 @@
         ```sh
         git push -u origin <dev-name>
         ```
-    4. Open a Pull Request (PR) to merge into the `dev` branch
+    4. Open a Pull Request (PR) to merge into the `dev` branch after the code is tested and reviewded with other team members.
     5. After review and merge:
         - Switch back to `dev` and pull the latest updates:
             ```
