@@ -1,13 +1,15 @@
-# To do:
-## Manual Control:
+# TODO:
+- Manual Control:
     1. Drive the motors at the same time
     2. Speed = delay in step() to prevent signal toggling too fast + delay in main.py to prevent consective input
     3. Constant Testing
-## Speed Control: 
+- Speed Control: 
     1. PID without encoder?
-## Trajectory Planning: 
+- Trajectory Planning: 
     1. Cable Driven Parallel Robots (CDPR)
-## Workflow
+
+---
+## How to Github 
     0. clone the repo
     1. Create a new branch <dev-name> from the dev branch
         ```
@@ -37,3 +39,4 @@
             git push origin --delete <dev-name>  # Remove remote branch
             ```
 
+            

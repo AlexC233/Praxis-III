@@ -1,7 +1,6 @@
 import board
 
 ## Pin Configuration
-
 MOTOR0_STEP = board.GP27
 MOTOR0_DIR = board.GP26
 
@@ -14,11 +13,9 @@ MOTOR2_DIR = board.GP18
 MOTOR3_STEP = board.GP17
 MOTOR3_DIR = board.GP16
 
-## Motor Parameters
-STEPS_PER_REV = 200
-
 ## Speed Configuration in seconds
-ONE_REV_PER_MIN = 0.3 # 60 / 200 = 0.3
+STEPS_PER_REV = 200           # 1.8 deg per step
+MOTOR_SPEED = 0.3             # rev per min
 
 ## Control Configuration
 # Left
