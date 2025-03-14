@@ -1,8 +1,8 @@
 # To do:
 ## Manual Control:
-    1. Drive the motors at the same time
-    2. Speed = delay in step() to prevent signal toggling too fast + delay in main.py to prevent consective input
-    3. Constant Testing
+    1. Drive the motors at the same time (Solved, Mar.12)
+    2. Speed = delay in step() to prevent signal toggling too fast + delay in main.py to prevent consective input (Partly solved with velocity to be decied, Mar.12)
+    3. Constant Testing 
 ## Speed Control: 
     1. PID without encoder?
 ## Trajectory Planning: 
@@ -24,7 +24,7 @@
         ```sh
         git push -u origin <dev-name>
         ```
-    4. Open a Pull Request (PR) to merge into the `dev` branch
+    4. Open a Pull Request (PR) to merge into the `dev` branch after the code is tested and reviewded with other team members.
     5. After review and merge:
         - Switch back to `dev` and pull the latest updates:
             ```
