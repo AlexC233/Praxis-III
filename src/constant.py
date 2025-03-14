@@ -1,62 +1,69 @@
 import board
 
 #
-# Pin configuration
+# Pin configuration for each motor, including index
 #
-MOTOR0_DIR_PIN = board.GP0
-MOTOR0_STEP_PIN = board.GP1
-
-MOTOR1_DIR_PIN = board.GP2
-MOTOR1_STEP_PIN = board.GP3
-
-MOTOR2_DIR_PIN = board.GP4
-MOTOR2_STEP_PIN = board.GP5
-
-MOTOR3_DIR_PIN = board.GP14
-MOTOR3_STEP_PIN = board.GP15
+MOTOR_PINS = {
+    "motor0": {"INDEX": 0, "DIR_PIN": board.GP0, "STEP_PIN": board.GP1},
+    "motor1": {"INDEX": 1, "DIR_PIN": board.GP2, "STEP_PIN": board.GP3},
+    "motor2": {"INDEX": 2, "DIR_PIN": board.GP4, "STEP_PIN": board.GP5},
+    "motor3": {"INDEX": 3, "DIR_PIN": board.GP14, "STEP_PIN": board.GP15},
+}
 
 #
 # Stepper Motor Parameters
 #
-STEPS_PER_REV = 200       # Nema 17: 200 steps per revolution, or 1.8 degrees per step
-DEFAULT_STEP_DELAY = 0.3 / 2 # 200 / 60 / 2 gives 1 RPM
+STEPS_PER_REV = 200       # Nemo 17
+DEFAULT_STEP_DELAY = 0.01 # Time (in seconds) between steps. Adjust as needed.
 
 #
-# Directions
+# Direction constants, top down view facing the shaft
 #
-DIR_CW  = False  # Clockwise, looking from top down (facing the shaft)
-DIR_CCW = True
+DIR_CW  = False  # Clockwise
+DIR_CCW = True   # Counterclockwise
 
 #
-# Movement Parameters
+# For each movement mode, define the direction, number of steps,
+# and delay for every motor. Adjust these to suit your robot.
 #
+MOVE_FORWARD = {
+    "motor0": {"direction": DIR_CW,  "steps": 100, "delay": DEFAULT_STEP_DELAY},
+    "motor1": {"direction": DIR_CW,  "steps": 100, "delay": DEFAULT_STEP_DELAY},
+    "motor2": {"direction": DIR_CW,  "steps": 100, "delay": DEFAULT_STEP_DELAY},
+    "motor3": {"direction": DIR_CW,  "steps": 100, "delay": DEFAULT_STEP_DELAY},
+}
 
-# Move forward
-FORWARD_DIRECTIONS = [DIR_CW, DIR_CW, DIR_CW, DIR_CW] 
-FORWARD_STEPS      = [100, 100, 100, 100]   # all motors take 100 steps
-FORWARD_DELAY      = [DEFAULT_STEP_DELAY]*4
+MOVE_BACKWARD = {
+    "motor0": {"direction": DIR_CCW, "steps": 100, "delay": DEFAULT_STEP_DELAY},
+    "motor1": {"direction": DIR_CCW, "steps": 100, "delay": DEFAULT_STEP_DELAY},
+    "motor2": {"direction": DIR_CCW, "steps": 100, "delay": DEFAULT_STEP_DELAY},
+    "motor3": {"direction": DIR_CCW, "steps": 100, "delay": DEFAULT_STEP_DELAY},
+}
 
-# Move backward
-BACKWARD_DIRECTIONS = [DIR_CCW, DIR_CCW, DIR_CCW, DIR_CCW]
-BACKWARD_STEPS      = [100, 100, 100, 100]
-BACKWARD_DELAY      = [DEFAULT_STEP_DELAY]*4
+MOVE_LEFT = {
+    "motor0": {"direction": DIR_CW,  "steps": 100, "delay": DEFAULT_STEP_DELAY},
+    "motor1": {"direction": DIR_CCW, "steps": 100, "delay": DEFAULT_STEP_DELAY},
+    "motor2": {"direction": DIR_CW,  "steps": 100, "delay": DEFAULT_STEP_DELAY},
+    "motor3": {"direction": DIR_CCW, "steps": 100, "delay": DEFAULT_STEP_DELAY},
+}
 
-# Move left
-LEFT_DIRECTIONS = [DIR_CW, DIR_CCW, DIR_CW, DIR_CCW]
-LEFT_STEPS      = [100, 100, 100, 100]
-LEFT_DELAY      = [DEFAULT_STEP_DELAY]*4
+MOVE_RIGHT = {
+    "motor0": {"direction": DIR_CCW, "steps": 100, "delay": DEFAULT_STEP_DELAY},
+    "motor1": {"direction": DIR_CW,  "steps": 100, "delay": DEFAULT_STEP_DELAY},
+    "motor2": {"direction": DIR_CCW, "steps": 100, "delay": DEFAULT_STEP_DELAY},
+    "motor3": {"direction": DIR_CW,  "steps": 100, "delay": DEFAULT_STEP_DELAY},
+}
 
-# Move right
-RIGHT_DIRECTIONS = [DIR_CCW, DIR_CW, DIR_CCW, DIR_CW]
-RIGHT_STEPS      = [100, 100, 100, 100]
-RIGHT_DELAY      = [DEFAULT_STEP_DELAY]*4
+MOVE_UP = {
+    "motor0": {"direction": DIR_CW,  "steps": 100, "delay": DEFAULT_STEP_DELAY},
+    "motor1": {"direction": DIR_CW,  "steps": 100, "delay": DEFAULT_STEP_DELAY},
+    "motor2": {"direction": DIR_CCW, "steps": 100, "delay": DEFAULT_STEP_DELAY},
+    "motor3": {"direction": DIR_CCW, "steps": 100, "delay": DEFAULT_STEP_DELAY},
+}
 
-# Move up
-UP_DIRECTIONS = [DIR_CW, DIR_CW, DIR_CCW, DIR_CCW]
-UP_STEPS      = [100, 100, 100, 100]
-UP_DELAY      = [DEFAULT_STEP_DELAY]*4
-
-# Move down
-DOWN_DIRECTIONS = [DIR_CCW, DIR_CCW, DIR_CW, DIR_CW]
-DOWN_STEPS      = [100, 100, 100, 100]
-DOWN_DELAY      = [DEFAULT_STEP_DELAY]*4
+MOVE_DOWN = {
+    "motor0": {"direction": DIR_CCW, "steps": 100, "delay": DEFAULT_STEP_DELAY},
+    "motor1": {"direction": DIR_CCW, "steps": 100, "delay": DEFAULT_STEP_DELAY},
+    "motor2": {"direction": DIR_CW,  "steps": 100, "delay": DEFAULT_STEP_DELAY},
+    "motor3": {"direction": DIR_CW,  "steps": 100, "delay": DEFAULT_STEP_DELAY},
+}
