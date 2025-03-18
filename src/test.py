@@ -1,24 +1,50 @@
 import time
-import board
-import digitalio
+import supervisor  # for checking serial input in CircuitPython
+from controller import Controller
 
+controller = Controller()
 
-DIR_PIN = digitalio.DigitalInOut(board.GP14)
-STEP_PIN = digitalio.DigitalInOut(board.GP15)
+print("Stepper controller initialized.")
+print("Commands:")
+print("  w = forward")
+print("  s = backward")
+print("  a = left")
+print("  d = right")
+print("  u = up")
+print("  n = down")
+print("Send one of the characters above, then press ENTER.")
 
-DIR_PIN.direction = digitalio.Direction.OUTPUT
-STEP_PIN.direction = digitalio.Direction.OUTPUT
-
-def step_motor(steps, direction, delay=0.001):
-    """Move stepper motor a given number of steps in a direction."""
-    DIR_PIN.value = direction  # Set direction (1 = CW, 0 = CCW)
-
-    for _ in range(steps):
-        STEP_PIN.value = True
-        time.sleep(delay)  # Step pulse width
-        STEP_PIN.value = False
-        time.sleep(delay)
-        
 while True:
-    step_motor(200, True)  # Move forward 1 revolution
-    time.sleep(5)
+    # Only check input if there's something available
+    if supervisor.runtime.serial_bytes_available:
+        user_input = input().strip().lower()
+
+        if user_input == 'w':
+            print("Forward...")
+            controller.forward()
+
+        elif user_input == 's':
+            print("Backward...")
+            controller.backward()
+
+        elif user_input == 'a':
+            print("Left...")
+            controller.left()
+
+        elif user_input == 'd':
+            print("Right...")
+            controller.right()
+
+        elif user_input == 'u':
+            print("Up...")
+            controller.up()
+
+        elif user_input == 'n':
+            print("Down...")
+            controller.down()
+
+        else:
+            print("Unrecognized command:", user_input)
+
+    # Wait 1 second before checking again
+    time.sleep(1)

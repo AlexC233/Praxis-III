@@ -1,8 +1,8 @@
 import time
 import supervisor  # for checking serial input in CircuitPython
-from controller import Controller
+from command_processor import CommandProcessor
 
-controller = Controller()
+processor = CommandProcessor()
 
 print("Stepper controller initialized.")
 print("Commands:")
@@ -12,40 +12,20 @@ print("  a = left")
 print("  d = right")
 print("  u = up")
 print("  n = down")
-print("Send one of the characters above, then press ENTER.")
+print("  r = reverse last command")
+print("Send one or multiple characters above, then press ENTER.")
 
 while True:
     # Only check input if there's something available
     if supervisor.runtime.serial_bytes_available:
         user_input = input().strip().lower()
-
-        if user_input == 'w':
-            print("Forward...")
-            controller.forward()
-
-        elif user_input == 's':
-            print("Backward...")
-            controller.backward()
-
-        elif user_input == 'a':
-            print("Left...")
-            controller.left()
-
-        elif user_input == 'd':
-            print("Right...")
-            controller.right()
-
-        elif user_input == 'u':
-            print("Up...")
-            controller.up()
-
-        elif user_input == 'n':
-            print("Down...")
-            controller.down()
-
+        
+        if user_input == 'r':
+            print("Reversing last command...")
+            processor.reverse_last_command()
         else:
-            print("Unrecognized command:", user_input)
-
-    # Wait 1 second before checking again
-    time.sleep(1)
+            print(f"Processing command: {user_input}")
+            processor.execute_command(user_input)
     
+    # Wait a short time before checking again
+    time.sleep(0.1)
