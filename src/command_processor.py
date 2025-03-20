@@ -26,7 +26,10 @@ class CommandProcessor:
         print(f"Executing sequence: {command_sequence}")
         for command in command_sequence:
             if command in self.command_map:
+                # calculate steps needed based on the command
+                # update movement dict
                 self.command_map[command]()
+                # update position
         
         self.logger.log_command(command_sequence)
     

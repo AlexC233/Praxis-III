@@ -1,50 +1,119 @@
-import time
-import supervisor  # for checking serial input in CircuitPython
+import constant
 from controller import Controller
+from command_logger import CommandLogger
 
-controller = Controller()
+class CommandProcessor:
+    def __init__(self):
+        self.controller = Controller()
+        self.logger = CommandLogger()
+        self.command_map = {
+            'w': self.controller.forward,
+            's': self.controller.backward,
+            'a': self.controller.left,
+            'd': self.controller.right,
+            'u': self.controller.up,
+            'n': self.controller.down
+        }
 
-print("Stepper controller initialized.")
-print("Commands:")
-print("  w = forward")
-print("  s = backward")
-print("  a = left")
-print("  d = right")
-print("  u = up")
-print("  n = down")
-print("Send one of the characters above, then press ENTER.")
+    def execute_command(self, command_sequence):
+        """
+        Executes a sequence of commands if valid.
+        """
+        if not self.is_valid_sequence(command_sequence):
+            print("Invalid command sequence.")
+            return
 
-while True:
-    # Only check input if there's something available
-    if supervisor.runtime.serial_bytes_available:
-        user_input = input().strip().lower()
-
-        if user_input == 'w':
-            print("Forward...")
-            controller.forward()
-
-        elif user_input == 's':
-            print("Backward...")
-            controller.backward()
-
-        elif user_input == 'a':
-            print("Left...")
-            controller.left()
-
-        elif user_input == 'd':
-            print("Right...")
-            controller.right()
-
-        elif user_input == 'u':
-            print("Up...")
-            controller.up()
-
-        elif user_input == 'n':
-            print("Down...")
-            controller.down()
-
+        print(f"Executing sequence: {command_sequence}")
+        for command in command_sequence:
+            if command in self.command_map:
+                
+                # calculate steps needed based on the command
+                # update movement dict
+                self.command_map[command]()
+                # update position
+        
+        self.logger.log_command(command_sequence)
+    
+    def is_valid_sequence(self, command_sequence):
+        """
+        Checks if all commands in the sequence are valid.
+        """
+        return all(cmd in self.command_map for cmd in command_sequence)
+    
+    def reverse_last_command(self):
+        """
+        Reverses the last executed command sequence and removes it from history.
+        """
+        last_command = self.logger.get_last_command()
+        if last_command:
+            reverse_sequence = ''.join(self.get_reverse_command(cmd) for cmd in reversed(last_command))
+            print(f"Reversing sequence: {reverse_sequence}")
+            for command in reverse_sequence:
+                if command in self.command_map:
+                    self.command_map[command]()
+            self.logger.clear_last_command()  # Remove last command from history
         else:
-            print("Unrecognized command:", user_input)
+            print("No command to reverse.")
+    
+    def get_reverse_command(self, command):
+        """
+        Returns the reverse of a given command.
+        """
+        reverse_map = {
+            'w': 's', 's': 'w', 'a': 'd', 'd': 'a', 'u': 'n', 'n': 'u'
+        }
+        return reverse_map.get(command, command)
 
-    # Wait 1 second before checking again
-    time.sleep(1)
+
+# Simplest manual control
+# 
+# import time
+# import supervisor  # for checking serial input in CircuitPython
+# from controller import Controller
+
+# controller = Controller()
+
+# print("Stepper controller initialized.")
+# print("Commands:")
+# print("  w = forward")
+# print("  s = backward")
+# print("  a = left")
+# print("  d = right")
+# print("  u = up")
+# print("  n = down")
+# print("Send one of the characters above, then press ENTER.")
+
+# while True:
+#     # Only check input if there's something available
+#     if supervisor.runtime.serial_bytes_available:
+#         user_input = input().strip().lower()
+
+#         if user_input == 'w':
+#             print("Forward...")
+#             controller.forward()
+
+#         elif user_input == 's':
+#             print("Backward...")
+#             controller.backward()
+
+#         elif user_input == 'a':
+#             print("Left...")
+#             controller.left()
+
+#         elif user_input == 'd':
+#             print("Right...")
+#             controller.right()
+
+#         elif user_input == 'u':
+#             print("Up...")
+#             controller.up()
+
+#         elif user_input == 'n':
+#             print("Down...")
+#             controller.down()
+
+#         else:
+#             print("Unrecognized command:", user_input)
+
+#     # Wait 1 second before checking again
+#     time.sleep(1)
