@@ -44,6 +44,8 @@ DIR_CCW = True   # Counterclockwise
 SPOOL_DIAMETER = 5.0
 SPOOL_CIRCUMFERENCE = math.pi * SPOOL_DIAMETER
 
+
+
 MOTOR_SHORTEN_RELEASE = {
     "motor0": {"shorten": DIR_CW,  "release": DIR_CCW},
     "motor1": {"shorten": DIR_CW,  "release": DIR_CCW },

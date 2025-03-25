@@ -122,7 +122,7 @@ class Controller:
 
     def forward(self, distance=5.0):
         """
-        Moves the end effector 'distance' forward (-X),
+        Moves the end effector "distance" forward (-X),
         but uses the directions from constant.MOVE_FORWARD.
         """
         x, y, z = self.current_position
@@ -181,13 +181,11 @@ class Controller:
 
     def test_move_anywhere(self, x, y, z):
         """
-        Move directly to (x, y, z), ignoring the per-motor directions
-        in constant.py. If you prefer, you can define a separate
-        constant.MOVE_TEST dictionary for each motor's direction, etc.
+        Move directly to (x, y, z), using the MOTOR_SHORTEN_RELEASE dictionary
+        in constant.py to decide which direction (CW or CCW) means spool-in or spool-out.
         """
-        # In real usage, you'd define a dictionary if your spool directions differ.
+        new_position = (x, y, z)
         movement_dict = {}
-        new_position  = (x, y, z)
 
         for i, motor_name in enumerate(sorted(self.motors.keys())):
             anchor = self.anchors[i]
@@ -195,8 +193,12 @@ class Controller:
             target_len  = self.calculate_length(anchor, new_position)
             diff = target_len - current_len
 
-            # For test: spool out if diff>0, in if diff<0
-            direction = constant.DIR_CCW if diff > 0 else constant.DIR_CW
+            # If diff > 0 => spool out => "release"; if diff < 0 => spool in => "shorten"
+            if diff > 0:
+                direction = constant.MOTOR_SHORTEN_RELEASE[motor_name]["release"]
+            else:
+                direction = constant.MOTOR_SHORTEN_RELEASE[motor_name]["shorten"]
+
             steps = self.length_to_steps(abs(diff))
 
             movement_dict[motor_name] = {
@@ -207,3 +209,5 @@ class Controller:
 
         self.move_motors(movement_dict)
         self.update_current_position(new_position)
+
+
