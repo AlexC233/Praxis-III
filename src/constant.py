@@ -20,11 +20,15 @@ MOTOR_PINS = {
     "motor3": {"INDEX": 3, "DIR_PIN": board.GP0, "STEP_PIN": board.GP1},
 }
 
+# Assuming diamond edge length of 46 cm
+DIAMOND_SIZE = 46.0
+CENTER_HEIGHT = 36.0
+
 MOTOR_ANCHORS = [
-            (0.0,  0.0,  36.0),  # Motor0 anchor
-            (46.0,  0.0,  36.0),  # Motor1 anchor
-            (46.0,  46.0,  36.0),  # Motor2 anchor
-            (0,  46.0,  36.0),  # Motor3 anchor
+    (DIAMOND_SIZE/2,  0.0,         CENTER_HEIGHT),  # North motor
+    (DIAMOND_SIZE,    DIAMOND_SIZE/2, CENTER_HEIGHT),  # East motor
+    (DIAMOND_SIZE/2,  DIAMOND_SIZE, CENTER_HEIGHT),  # South motor
+    (0.0,          DIAMOND_SIZE/2, CENTER_HEIGHT),  # West motor
 ]
 
 #
@@ -54,30 +58,31 @@ MOTOR_SHORTEN_RELEASE = {
     "motor3": {"shorten": DIR_CCW, "release": DIR_CW },
 }
 MODE_ACTIONS = {
-    "forward": {
-        "motor0": "shorten",  
-        "motor1": "release",  
-        "motor2": "release",  
-        "motor3": "shorten",  
+    "forward": {  # North (w key)
+        "motor0": "shorten",  # North motor (primary)
+        "motor1": "release",  # East motor
+        "motor2": "release",  # South motor
+        "motor3": "release",  # West motor
     },
-    "backward": {
-        "motor0": "release",  
-        "motor1": "shorten",  
-        "motor2": "shorten",  
-        "motor3": "release",  
+    "backward": {  # South (s key)
+        "motor0": "release",  # North motor
+        "motor1": "release",  # East motor
+        "motor2": "shorten",  # South motor (primary)
+        "motor3": "release",  # West motor
     },
-    "left": {
-        "motor0": "shorten",  
-        "motor1": "shorten",   
-        "motor2": "release",  
-        "motor3": "release",  
+    "left": {  # West (a key)
+        "motor0": "release",  # North motor
+        "motor1": "release",  # East motor
+        "motor2": "release",  # South motor
+        "motor3": "shorten",  # West motor (primary)
     },
-    "right": {
-        "motor0": "release",  
-        "motor1": "release",   
-        "motor2": "shorten",  
-        "motor3": "shorten",  
+    "right": {  # East (d key)
+        "motor0": "release",  # North motor
+        "motor1": "shorten",  # East motor (primary)
+        "motor2": "release",  # South motor
+        "motor3": "release",  # West motor
     },
+    # Up/Down commands control Z-axis movement
     "up": {
         "motor0": "shorten",  
         "motor1": "shorten",   

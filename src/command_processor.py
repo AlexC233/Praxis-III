@@ -11,7 +11,11 @@ class CommandProcessor:
             'a': self.controller.left,
             'd': self.controller.right,
             'u': self.controller.up,
-            'n': self.controller.down
+            'n': self.controller.down,
+            'ne': lambda: self.controller.move_with_vector(0.707, 0.707),   # Northeast
+            'nw': lambda: self.controller.move_with_vector(-0.707, 0.707),  # Northwest
+            'se': lambda: self.controller.move_with_vector(0.707, -0.707),  # Southeast
+            'sw': lambda: self.controller.move_with_vector(-0.707, -0.707), # Southwest
         }
 
     def execute_command(self, command_sequence):

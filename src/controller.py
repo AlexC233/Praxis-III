@@ -20,7 +20,7 @@ class Controller:
         # You can change this if you have a known home or start position 
         self.current_position = constant.INITIAL_POSITION
 
-        # Example anchor points for each motor’s cable origin.
+        # Example anchor points for each motor's cable origin.
         self.anchors = constant.MOTOR_ANCHORS
 
     def move_motors(self, movement_dict):
@@ -300,4 +300,54 @@ class Controller:
             print(f"Motor {motor_name} => {move_info['steps']} steps (direction: {direction_str})")
 
         print(f"Current position after down: {self.current_position}\n")
+
+    def calculate_motor_powers(self, direction_x, direction_y):
+        """
+        Convert Cartesian coordinate movement to motor power distribution
+        
+        Args:
+            direction_x: float (-1.0 to 1.0) - horizontal movement
+            direction_y: float (-1.0 to 1.0) - vertical movement
+        
+        Returns:
+            Dictionary containing power values for each motor (0.0 to 1.0)
+        """
+        # Normalize vector
+        magnitude = math.sqrt(direction_x**2 + direction_y**2)
+        if magnitude > 0:
+            direction_x /= magnitude
+            direction_y /= magnitude
+
+        # Calculate power for each motor
+        motor_powers = {
+            "motor0": max(0, direction_y),      # North motor
+            "motor1": max(0, direction_x),      # East motor
+            "motor2": max(0, -direction_y),     # South motor
+            "motor3": max(0, -direction_x),     # West motor
+        }
+        
+        return motor_powers
+
+    def move_with_vector(self, direction_x, direction_y, distance=5.0):
+        """
+        Move the robot according to vector direction
+        
+        Args:
+            direction_x: float - X component of movement vector
+            direction_y: float - Y component of movement vector
+            distance: float - Movement distance in cm
+        """
+        motor_powers = self.calculate_motor_powers(direction_x, direction_y)
+        
+        # Generate movement dictionary
+        movement_dict = {}
+        for motor_name, power in motor_powers.items():
+            steps = int(power * self.length_to_steps(distance))
+            movement_dict[motor_name] = {
+                "direction": constant.MOTOR_SHORTEN_RELEASE[motor_name]["shorten"],
+                "steps": steps,
+                "delay": constant.DEFAULT_STEP_DELAY
+            }
+        
+        self.move_motors(movement_dict)
 
