@@ -3,14 +3,15 @@ import math
 
 # All units in CM
 #
+INITIAL_POSITION = (3.0, 3.0, 36.0)  # Initial position of the robot in CM
 # Pin configuration for each motor, including index
 #
-MOTOR_PINS = {
-    "motor0": {"INDEX": 0, "DIR_PIN": board.GP0, "STEP_PIN": board.GP1},
-    "motor1": {"INDEX": 1, "DIR_PIN": board.GP2, "STEP_PIN": board.GP3},
-    "motor2": {"INDEX": 2, "DIR_PIN": board.GP4, "STEP_PIN": board.GP5},
-    "motor3": {"INDEX": 3, "DIR_PIN": board.GP14, "STEP_PIN": board.GP15},
-}
+# MOTOR_PINS = {
+#     "motor0": {"INDEX": 0, "DIR_PIN": board.GP0, "STEP_PIN": board.GP1},
+#     "motor1": {"INDEX": 1, "DIR_PIN": board.GP2, "STEP_PIN": board.GP3},
+#     "motor2": {"INDEX": 2, "DIR_PIN": board.GP4, "STEP_PIN": board.GP5},
+#     "motor3": {"INDEX": 3, "DIR_PIN": board.GP14, "STEP_PIN": board.GP15},
+# }
 
 MOTOR_PINS = {
     "motor0": {"INDEX": 0, "DIR_PIN": board.GP14, "STEP_PIN": board.GP15},
@@ -20,10 +21,10 @@ MOTOR_PINS = {
 }
 
 MOTOR_ANCHORS = [
-            (0.0,  0.0,  0.0),  # Motor0 anchor
-            (1.0,  0.0,  0.0),  # Motor1 anchor
-            (1.0,  1.0,  0.0),  # Motor2 anchor
-            (0.0,  1.0,  0.0),  # Motor3 anchor
+            (0.0,  0.0,  36.0),  # Motor0 anchor
+            (46.0,  0.0,  36.0),  # Motor1 anchor
+            (46.0,  46.0,  36.0),  # Motor2 anchor
+            (0,  46.0,  36.0),  # Motor3 anchor
 ]
 
 #

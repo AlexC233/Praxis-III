@@ -18,7 +18,7 @@ class Controller:
             )
 
         # You can change this if you have a known home or start position 
-        self.current_position = (0.0, 0.0, 0.0)
+        self.current_position = constant.INITIAL_POSITION
 
         # Example anchor points for each motor’s cable origin.
         self.anchors = constant.MOTOR_ANCHORS
@@ -120,94 +120,184 @@ class Controller:
     # ------------------------------------------------------------
 
 
+    # def forward(self, distance=5.0):
+    #     """
+    #     Moves the end effector "distance" forward (-X),
+    #     but uses the directions from constant.MOVE_FORWARD.
+    #     """
+    #     x, y, z = self.current_position
+    #     new_pos = (x - distance, y, z)
+
+    #     # Build a movement dict that uses constant.MOVE_FORWARD
+    #     movement_dict = self.generate_movement_dict_from_mode(new_pos, constant.MOVE_FORWARD)
+
+    #     self.move_motors(movement_dict)
+    #     self.update_current_position(new_pos)
+
+    # def backward(self, distance=5.0):
+    #     x, y, z = self.current_position
+    #     new_pos = (x + distance, y, z)
+
+    #     movement_dict = self.generate_movement_dict_from_mode(new_pos, constant.MOVE_BACKWARD)
+
+    #     self.move_motors(movement_dict)
+    #     self.update_current_position(new_pos)
+
+    # def left(self, distance=5.0):
+    #     x, y, z = self.current_position
+    #     new_pos = (x, y - distance, z)
+
+    #     movement_dict = self.generate_movement_dict_from_mode(new_pos, constant.MOVE_LEFT)
+
+    #     self.move_motors(movement_dict)
+    #     self.update_current_position(new_pos)
+
+    # def right(self, distance=5.0):
+    #     x, y, z = self.current_position
+    #     new_pos = (x, y + distance, z)
+
+    #     movement_dict = self.generate_movement_dict_from_mode(new_pos, constant.MOVE_RIGHT)
+
+    #     self.move_motors(movement_dict)
+    #     self.update_current_position(new_pos)
+
+    # def up(self, distance=5.0):
+    #     x, y, z = self.current_position
+    #     new_pos = (x, y, z + distance)
+
+    #     movement_dict = self.generate_movement_dict_from_mode(new_pos, constant.MOVE_UP)
+
+    #     self.move_motors(movement_dict)
+    #     self.update_current_position(new_pos)
+
+    # def down(self, distance=5.0):
+    #     x, y, z = self.current_position
+    #     new_pos = (x, y, z - distance)
+
+    #     movement_dict = self.generate_movement_dict_from_mode(new_pos, constant.MOVE_DOWN)
+
+    #     self.move_motors(movement_dict)
+    #     self.update_current_position(new_pos)
+
+    # def test_move_anywhere(self, x, y, z):
+    #     """
+    #     Move directly to (x, y, z), using the MOTOR_SHORTEN_RELEASE dictionary
+    #     in constant.py to decide which direction (CW or CCW) means spool-in or spool-out.
+    #     """
+    #     new_position = (x, y, z)
+    #     movement_dict = {}
+
+    #     for i, motor_name in enumerate(sorted(self.motors.keys())):
+    #         anchor = self.anchors[i]
+    #         current_len = self.calculate_length(anchor, self.current_position)
+    #         target_len  = self.calculate_length(anchor, new_position)
+    #         diff = target_len - current_len
+
+    #         # If diff > 0 => spool out => "release"; if diff < 0 => spool in => "shorten"
+    #         if diff > 0:
+    #             direction = constant.MOTOR_SHORTEN_RELEASE[motor_name]["release"]
+    #         else:
+    #             direction = constant.MOTOR_SHORTEN_RELEASE[motor_name]["shorten"]
+
+    #         steps = self.length_to_steps(abs(diff))
+
+    #         movement_dict[motor_name] = {
+    #             "direction": direction,
+    #             "steps": steps,
+    #             "delay": constant.DEFAULT_STEP_DELAY
+    #         }
+
+    #     self.move_motors(movement_dict)
+    #     self.update_current_position(new_position)
+
     def forward(self, distance=5.0):
-        """
-        Moves the end effector "distance" forward (-X),
-        but uses the directions from constant.MOVE_FORWARD.
-        """
         x, y, z = self.current_position
         new_pos = (x - distance, y, z)
 
-        # Build a movement dict that uses constant.MOVE_FORWARD
         movement_dict = self.generate_movement_dict_from_mode(new_pos, constant.MOVE_FORWARD)
-
         self.move_motors(movement_dict)
         self.update_current_position(new_pos)
+
+        # Print how many steps each motor took
+        for motor_name, move_info in movement_dict.items():
+            direction_str = "CCW" if move_info["direction"] else "CW"
+            print(f"Motor {motor_name} => {move_info['steps']} steps (direction: {direction_str})")
+
+        # Print the updated position
+        print(f"Current position after forward: {self.current_position}\n")
+
 
     def backward(self, distance=5.0):
         x, y, z = self.current_position
         new_pos = (x + distance, y, z)
 
         movement_dict = self.generate_movement_dict_from_mode(new_pos, constant.MOVE_BACKWARD)
-
         self.move_motors(movement_dict)
         self.update_current_position(new_pos)
+
+        for motor_name, move_info in movement_dict.items():
+            direction_str = "CCW" if move_info["direction"] else "CW"
+            print(f"Motor {motor_name} => {move_info['steps']} steps (direction: {direction_str})")
+
+        print(f"Current position after backward: {self.current_position}\n")
+
 
     def left(self, distance=5.0):
         x, y, z = self.current_position
         new_pos = (x, y - distance, z)
 
         movement_dict = self.generate_movement_dict_from_mode(new_pos, constant.MOVE_LEFT)
-
         self.move_motors(movement_dict)
         self.update_current_position(new_pos)
+
+        for motor_name, move_info in movement_dict.items():
+            direction_str = "CCW" if move_info["direction"] else "CW"
+            print(f"Motor {motor_name} => {move_info['steps']} steps (direction: {direction_str})")
+
+        print(f"Current position after left: {self.current_position}\n")
+
 
     def right(self, distance=5.0):
         x, y, z = self.current_position
         new_pos = (x, y + distance, z)
 
         movement_dict = self.generate_movement_dict_from_mode(new_pos, constant.MOVE_RIGHT)
-
         self.move_motors(movement_dict)
         self.update_current_position(new_pos)
+
+        for motor_name, move_info in movement_dict.items():
+            direction_str = "CCW" if move_info["direction"] else "CW"
+            print(f"Motor {motor_name} => {move_info['steps']} steps (direction: {direction_str})")
+
+        print(f"Current position after right: {self.current_position}\n")
+
 
     def up(self, distance=5.0):
         x, y, z = self.current_position
         new_pos = (x, y, z + distance)
 
         movement_dict = self.generate_movement_dict_from_mode(new_pos, constant.MOVE_UP)
-
         self.move_motors(movement_dict)
         self.update_current_position(new_pos)
+
+        for motor_name, move_info in movement_dict.items():
+            direction_str = "CCW" if move_info["direction"] else "CW"
+            print(f"Motor {motor_name} => {move_info['steps']} steps (direction: {direction_str})")
+
+        print(f"Current position after up: {self.current_position}\n")
+
 
     def down(self, distance=5.0):
         x, y, z = self.current_position
         new_pos = (x, y, z - distance)
 
         movement_dict = self.generate_movement_dict_from_mode(new_pos, constant.MOVE_DOWN)
-
         self.move_motors(movement_dict)
         self.update_current_position(new_pos)
 
-    def test_move_anywhere(self, x, y, z):
-        """
-        Move directly to (x, y, z), using the MOTOR_SHORTEN_RELEASE dictionary
-        in constant.py to decide which direction (CW or CCW) means spool-in or spool-out.
-        """
-        new_position = (x, y, z)
-        movement_dict = {}
+        for motor_name, move_info in movement_dict.items():
+            direction_str = "CCW" if move_info["direction"] else "CW"
+            print(f"Motor {motor_name} => {move_info['steps']} steps (direction: {direction_str})")
 
-        for i, motor_name in enumerate(sorted(self.motors.keys())):
-            anchor = self.anchors[i]
-            current_len = self.calculate_length(anchor, self.current_position)
-            target_len  = self.calculate_length(anchor, new_position)
-            diff = target_len - current_len
-
-            # If diff > 0 => spool out => "release"; if diff < 0 => spool in => "shorten"
-            if diff > 0:
-                direction = constant.MOTOR_SHORTEN_RELEASE[motor_name]["release"]
-            else:
-                direction = constant.MOTOR_SHORTEN_RELEASE[motor_name]["shorten"]
-
-            steps = self.length_to_steps(abs(diff))
-
-            movement_dict[motor_name] = {
-                "direction": direction,
-                "steps": steps,
-                "delay": constant.DEFAULT_STEP_DELAY
-            }
-
-        self.move_motors(movement_dict)
-        self.update_current_position(new_position)
-
+        print(f"Current position after down: {self.current_position}\n")
 
