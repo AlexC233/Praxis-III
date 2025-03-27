@@ -1,4 +1,3 @@
-import constant
 from controller import Controller
 from command_logger import CommandLogger
 

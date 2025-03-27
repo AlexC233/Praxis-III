@@ -1,6 +1,9 @@
 import board
+import math
 
+# All units in CM
 #
+INITIAL_POSITION = (3.0, 3.0, 36.0)  # Initial position of the robot in CM
 # Pin configuration for each motor, including index
 #
 # MOTOR_PINS = {
@@ -17,11 +20,18 @@ MOTOR_PINS = {
     "motor3": {"INDEX": 3, "DIR_PIN": board.GP0, "STEP_PIN": board.GP1},
 }
 
+MOTOR_ANCHORS = [
+            (0.0,  0.0,  36.0),  # Motor0 anchor
+            (46.0,  0.0,  36.0),  # Motor1 anchor
+            (46.0,  46.0,  36.0),  # Motor2 anchor
+            (0,  46.0,  36.0),  # Motor3 anchor
+]
+
 #
 # Stepper Motor Parameters
 #
 STEPS_PER_REV = 200       # Nemo 17
-DEFAULT_STEP_DELAY = 0.01 # Time (in seconds) between steps. Adjust as needed.
+DEFAULT_STEP_DELAY = 0.01 # Time (in seconds) between steps.
 
 #
 # Direction constants, top down view facing the shaft
@@ -30,58 +40,82 @@ DIR_CW  = False  # Clockwise
 DIR_CCW = True   # Counterclockwise
 
 
-# get_steps(motor, movement_mode, current_position):
-
 #
-# For each movement mode, define the direction, number of steps,
-# and delay for every motor. Adjust these to suit your robot.
-#
-MOVE_FORWARD = {
-    "motor0": {"direction": DIR_CW,  "steps": 10, "delay": DEFAULT_STEP_DELAY},
-    "motor1": {"direction": DIR_CCW,  "steps": 10, "delay": DEFAULT_STEP_DELAY},
-    "motor2": {"direction": DIR_CW,  "steps": 10, "delay": DEFAULT_STEP_DELAY},
-    "motor3": {"direction": DIR_CCW,  "steps": 10, "delay": DEFAULT_STEP_DELAY},
+# Spool Parameters
+SPOOL_DIAMETER = 5.0
+SPOOL_CIRCUMFERENCE = math.pi * SPOOL_DIAMETER
+
+
+
+MOTOR_SHORTEN_RELEASE = {
+    "motor0": {"shorten": DIR_CW,  "release": DIR_CCW},
+    "motor1": {"shorten": DIR_CW,  "release": DIR_CCW },
+    "motor2": {"shorten": DIR_CCW, "release": DIR_CW},
+    "motor3": {"shorten": DIR_CCW, "release": DIR_CW },
+}
+MODE_ACTIONS = {
+    "forward": {
+        "motor0": "shorten",  
+        "motor1": "release",  
+        "motor2": "release",  
+        "motor3": "shorten",  
+    },
+    "backward": {
+        "motor0": "release",  
+        "motor1": "shorten",  
+        "motor2": "shorten",  
+        "motor3": "release",  
+    },
+    "left": {
+        "motor0": "shorten",  
+        "motor1": "shorten",   
+        "motor2": "release",  
+        "motor3": "release",  
+    },
+    "right": {
+        "motor0": "release",  
+        "motor1": "release",   
+        "motor2": "shorten",  
+        "motor3": "shorten",  
+    },
+    "up": {
+        "motor0": "shorten",  
+        "motor1": "shorten",   
+        "motor2": "shorten",   
+        "motor3": "shorten",  
+    },
+    "down": {
+        "motor0": "release",  
+        "motor1": "release",  
+        "motor2": "release",  
+        "motor3": "release",  
+    },
 }
 
-MOVE_BACKWARD = {
-    "motor0": {"direction": DIR_CCW, "steps": 10, "delay": DEFAULT_STEP_DELAY},
-    "motor1": {"direction": DIR_CW, "steps": 10, "delay": DEFAULT_STEP_DELAY},
-    "motor2": {"direction": DIR_CCW, "steps": 10, "delay": DEFAULT_STEP_DELAY},
-    "motor3": {"direction": DIR_CW, "steps": 10, "delay": DEFAULT_STEP_DELAY},
-}
 
-MOVE_LEFT = {
-    "motor0": {"direction": DIR_CW,  "steps": 10, "delay": DEFAULT_STEP_DELAY},
-    "motor1": {"direction": DIR_CW, "steps": 10, "delay": DEFAULT_STEP_DELAY},
-    "motor2": {"direction": DIR_CW,  "steps": 10, "delay": DEFAULT_STEP_DELAY},
-    "motor3": {"direction": DIR_CW, "steps": 10, "delay": DEFAULT_STEP_DELAY},
-}
+def build_move_dict(mode_name: str):
+    """
+    Given a mode_name (e.g. "forward"), build the final dictionary like:
+    {
+      "motor0": {"direction": DIR_CW or DIR_CCW, "delay": DEFAULT_STEP_DELAY},
+      "motor1": {...},
+      ...
+    }
+    """
+    move_dict = {}
+    for motor, action in MODE_ACTIONS[mode_name].items():
+        move_dict[motor] = {
+            "direction": MOTOR_SHORTEN_RELEASE[motor][action],
+            "delay": DEFAULT_STEP_DELAY
+        }
+    return move_dict
 
-MOVE_RIGHT = {
-    "motor0": {"direction": DIR_CCW, "steps": 10, "delay": DEFAULT_STEP_DELAY},
-    "motor1": {"direction": DIR_CCW,  "steps": 10, "delay": DEFAULT_STEP_DELAY},
-    "motor2": {"direction": DIR_CCW, "steps": 10, "delay": DEFAULT_STEP_DELAY},
-    "motor3": {"direction": DIR_CCW,  "steps": 10, "delay": DEFAULT_STEP_DELAY},
-}
 
-MOVE_UP = {
-    "motor0": {"direction": DIR_CW,  "steps": 5, "delay": DEFAULT_STEP_DELAY},
-    "motor1": {"direction": DIR_CW,  "steps": 5, "delay": DEFAULT_STEP_DELAY},
-    "motor2": {"direction": DIR_CCW, "steps": 5, "delay": DEFAULT_STEP_DELAY},
-    "motor3": {"direction": DIR_CCW, "steps": 5, "delay": DEFAULT_STEP_DELAY},
-}
+MOVE_FORWARD  = build_move_dict("forward")
+MOVE_BACKWARD = build_move_dict("backward")
+MOVE_LEFT     = build_move_dict("left")
+MOVE_RIGHT    = build_move_dict("right")
+MOVE_UP       = build_move_dict("up")
+MOVE_DOWN     = build_move_dict("down")
 
-MOVE_DOWN = {
-    "motor0": {"direction": DIR_CCW, "steps": 5, "delay": DEFAULT_STEP_DELAY},
-    "motor1": {"direction": DIR_CCW, "steps": 5, "delay": DEFAULT_STEP_DELAY},
-    "motor2": {"direction": DIR_CW,  "steps": 5, "delay": DEFAULT_STEP_DELAY},
-    "motor3": {"direction": DIR_CW,  "steps": 5, "delay": DEFAULT_STEP_DELAY},
-}
 
-MOVE_TEST = {
-    "motor0": {"direction": DIR_CCW, "steps": 5, "delay": DEFAULT_STEP_DELAY},
-    "motor1": {"direction": DIR_CCW, "steps": 5, "delay": DEFAULT_STEP_DELAY},
-    "motor2": {"direction": DIR_CW,  "steps": 5, "delay": DEFAULT_STEP_DELAY},
-    "motor3": {"direction": DIR_CW,  "steps": 5, "delay": DEFAULT_STEP_DELAY},
-
-}
